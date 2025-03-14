@@ -53,28 +53,37 @@ end function */
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
     queue<vector<string>> ladder_queue;
+
+    if (word_list.find(end_word) == word_list.end()) return {};
+
     ladder_queue.push({begin_word});
     set<string> visited;
     visited.insert(begin_word);
 
     while (!ladder_queue.empty()) {
-        vector<string> ladder = ladder_queue.front();
+        auto current_ladder = ladder_queue.front();
         ladder_queue.pop();
-        string last_word = ladder.back();
+        string last_word = current_ladder.back();
 
-        if (last_word == end_word) {
-            return ladder;
-        }
+        for (int i = 0; i < last_word.size(); ++i) {
+            string candidate = last_word;
+            for (char c = 'a'; c <= 'z'; ++c) {
+                candidate[i] = c;
 
-        for (const string& word : word_list) {
-            if (is_adjacent(last_word, word) && visited.find(word) == visited.end()) {
-                visited.insert(word);
-                vector<string> new_ladder = ladder;
-                new_ladder.push_back(word);
-                ladder_queue.push(new_ladder);
+                if (candidate == end_word) {
+                    current_ladder.push_back(candidate);
+                    return current_ladder;
+                }
+
+                if (word_list.count(candidate) && !visited.count(candidate)) {
+                    visited.insert(candidate);
+                    vector<string> new_ladder = current_ladder;
+                    new_ladder.push_back(candidate);
+                    ladder_queue.push(new_ladder);
+                }
             }
-        }
-    }
+        } 
+    }  
 
     return {};
 } 
