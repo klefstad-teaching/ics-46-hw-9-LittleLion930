@@ -5,7 +5,7 @@ extern set<string> g_word_list;
 
 int main() {
     set<string> dictionary;
-    load_words(dictionary, "words.txt");
+    load_words(dictionary, "/home/masudal/ICS46/HW9/src/words.txt");
 
     string start_word, end_word;
     cout << "Enter start word: ";

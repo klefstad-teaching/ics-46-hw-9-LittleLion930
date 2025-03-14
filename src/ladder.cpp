@@ -28,7 +28,13 @@ bool edit_distance_within(const string& str1, const string& str2, int d) {
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
-    return edit_distance_within(word1, word2, 1);
+    if (word1.length() != word2.length()) return false;
+    int differences = 0;
+    for (size_t i = 0; i < word1.length(); ++i) {
+        if (word1[i] != word2[i]) differences++;
+        if (differences > 1) return false;
+    }
+    return differences == 1;
 }
 
 /* function generate_word_ladder(begin_word, end_word, word_list):
@@ -81,6 +87,10 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
 
 void load_words(set<string> & word_list, const string& file_name) {
     ifstream file(file_name);
+    if (!file.is_open()) {
+        cerr << "Error: Unable to open file " << file_name << endl;
+        return;
+    }
 
     string word;
     while (file >> word) {
@@ -104,25 +114,17 @@ void print_word_ladder(const vector<string>& ladder) {
     }
 }
 
-vector<string> g_ladder;
-set<string> g_word_list;
-
 void verify_word_ladder() {
-    if (g_ladder.size() < 2) {
-        cout << "Invalid ladder: too short" << endl;
-        return;
-    }
+    set<string> word_list;
+    load_words(word_list, "words.txt");
 
-    for (size_t i = 1; i < g_ladder.size(); ++i) {
-        if (!is_adjacent(g_ladder[i - 1], g_ladder[i])) {
-            cout << "Invalid ladder: non-adjacent words " << g_ladder[i - 1] << " and " << g_ladder[i] << endl;
-            return;
-        }
-        if (i > 0 && g_word_list.find(g_ladder[i]) == g_word_list.end()) {
-            cout << "Invalid ladder: word not in dictionary: " << g_ladder[i] << endl;
-            return;
-        }
-    }
-
-    cout << "Valid word ladder" << endl;
+    auto test_ladder = [&word_list](const string& start, const string& end, int expected_size) {
+        vector<string> ladder = generate_word_ladder(start, end, word_list);
+        bool passed = ladder.size() == expected_size;
+        cout << "Ladder from " << start << " to " << end 
+             << (passed ? " passed" : " failed")
+             << " (expected size: " << expected_size 
+             << ", actual size: " << ladder.size() << ")" << endl;
+        return passed;
+    };
 }
