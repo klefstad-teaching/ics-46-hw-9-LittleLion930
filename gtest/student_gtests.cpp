@@ -6,7 +6,6 @@
 class LadderTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        // Add words to the dictionary
         word_list = {"were", "wear", "bear", "beer", "bees", "been", "seen", "seed", "weed"};
     }
 
