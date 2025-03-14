@@ -52,41 +52,35 @@ bool is_adjacent(const string& word1, const string& word2) {
 end function */
 
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
+    if (word_list.find(end_word) == word_list.end()) return {}; 
+
     queue<vector<string>> ladder_queue;
-
-    if (word_list.find(end_word) == word_list.end()) return {};
-
     ladder_queue.push({begin_word});
     set<string> visited;
     visited.insert(begin_word);
 
     while (!ladder_queue.empty()) {
-        auto current_ladder = ladder_queue.front();
+        vector<string> ladder = ladder_queue.front();
         ladder_queue.pop();
-        string last_word = current_ladder.back();
+        string last_word = ladder.back();
 
-        for (int i = 0; i < last_word.size(); ++i) {
-            string candidate = last_word;
-            for (char c = 'a'; c <= 'z'; ++c) {
-                candidate[i] = c;
-
-                if (candidate == end_word) {
-                    current_ladder.push_back(candidate);
-                    return current_ladder;
-                }
-
-                if (word_list.count(candidate) && !visited.count(candidate)) {
-                    visited.insert(candidate);
-                    vector<string> new_ladder = current_ladder;
-                    new_ladder.push_back(candidate);
+        for (const string& word : word_list) {
+            if (word.length() == last_word.length() && is_adjacent(last_word, word)) {
+                if (visited.find(word) == visited.end()) {
+                    visited.insert(word);
+                    vector<string> new_ladder = ladder;
+                    new_ladder.push_back(word);
+                    if (word == end_word) {
+                        return new_ladder;
+                    }
                     ladder_queue.push(new_ladder);
                 }
             }
-        } 
-    }  
+        }
+    }
 
-    return {};
-} 
+    return {};  
+}
 
 void load_words(set<string> & word_list, const string& file_name) {
     ifstream file(file_name);
