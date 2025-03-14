@@ -81,10 +81,13 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
 
 void load_words(set<string> & word_list, const string& file_name) {
     ifstream file(file_name);
+
     string word;
     while (file >> word) {
         word_list.insert(word);
     }
+
+    file.close();
 }
 
 void print_word_ladder(const vector<string>& ladder) {
