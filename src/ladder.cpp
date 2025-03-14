@@ -6,6 +6,9 @@ void error(string word1, string word2, string msg) {
 }
 
 bool edit_distance_within(const string& str1, const string& str2, int d) {
+    if (str1 == str2) return true;
+    if (str1.empty() || str2.empty()) return (max(str1.size(), str2.size()) <= d);
+
     int m = str1.length();
     int n = str2.length();
     if (abs(m - n) > d) return false;
@@ -16,15 +19,18 @@ bool edit_distance_within(const string& str1, const string& str2, int d) {
 
     for (int i = 1; i <= m; i++) {
         curr[0] = i;
+        int min_val = curr[0];
 
         for (int j = 1; j <= n; j++) {
             if (str1[i - 1] == str2[j - 1]) 
                 curr[j] = prev[j - 1];
             else 
                 curr[j] = 1 + min({prev[j], curr[j - 1], prev[j - 1]});
+
+            min_val = min(min_val, curr[j]);
         }
 
-        if (*std::min_element(curr.begin(), curr.end()) > d) return false;
+        if (min_val > d) return false;
 
         prev.swap(curr);
     }
