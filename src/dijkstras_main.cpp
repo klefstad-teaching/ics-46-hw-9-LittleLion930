@@ -3,7 +3,7 @@
 
 int dijkstras_main() {
     Graph G;
-    file_to_graph("graph.txt", G);
+    file_to_graph("/home/masudal/ICS46/HW9/src/words.txt", G);
 
     int source = 0;
     vector<int> previous;
