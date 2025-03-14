@@ -28,13 +28,7 @@ bool edit_distance_within(const string& str1, const string& str2, int d) {
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
-    if (word1.length() != word2.length()) return false;
-    int differences = 0;
-    for (size_t i = 0; i < word1.length(); ++i) {
-        if (word1[i] != word2[i]) differences++;
-        if (differences > 1) return false;
-    }
-    return differences == 1;
+    return edit_distance_within(word1, word2, 1);
 }
 
 /* function generate_word_ladder(begin_word, end_word, word_list):
