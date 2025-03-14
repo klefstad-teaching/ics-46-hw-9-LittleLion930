@@ -13,6 +13,7 @@ int dijkstras_main() {
     for (int dest = 0; dest < G.numVertices; ++dest) {
         vector<int> path = extract_shortest_path(distances, previous, dest);
         print_path(path, distances[dest]);
+        cout << endl;
     }
 
     return 0;
