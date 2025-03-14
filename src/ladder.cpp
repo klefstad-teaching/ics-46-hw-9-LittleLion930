@@ -51,7 +51,7 @@ bool is_adjacent(const string& word1, const string& word2) {
     return no ladder found
 end function */
 
-vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
+/* vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
     queue<vector<string>> ladder_queue;
     ladder_queue.push({begin_word});
     set<string> visited;
@@ -77,6 +77,67 @@ vector<string> generate_word_ladder(const string& begin_word, const string& end_
     }
 
     return {};
+} */
+
+vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list) {
+    queue<vector<string>> ladder_queue;
+    ladder_queue.push({begin_word});
+    set<string> visited;
+    visited.insert(begin_word);
+
+    while (!ladder_queue.empty()) {
+        vector<string> ladder = ladder_queue.front();
+        ladder_queue.pop();
+        string last_word = ladder.back();
+
+        if (last_word == end_word) {
+            return ladder;
+        }
+
+        // Generate all possible next words
+        for (int i = 0; i <= last_word.length(); ++i) {
+            string new_word = last_word;
+            for (char c = 'a'; c <= 'z'; ++c) {
+                // Try inserting a character
+                new_word.insert(i, 1, c);
+                if ((word_list.count(new_word) || new_word == end_word) && visited.count(new_word) == 0) {
+                    visited.insert(new_word);
+                    vector<string> new_ladder = ladder;
+                    new_ladder.push_back(new_word);
+                    ladder_queue.push(new_ladder);
+                    if (new_word == end_word) return new_ladder;
+                }
+                new_word.erase(i, 1);
+
+                // Try replacing a character
+                if (i < last_word.length()) {
+                    char original = new_word[i];
+                    new_word[i] = c;
+                    if ((word_list.count(new_word) || new_word == end_word) && visited.count(new_word) == 0) {
+                        visited.insert(new_word);
+                        vector<string> new_ladder = ladder;
+                        new_ladder.push_back(new_word);
+                        ladder_queue.push(new_ladder);
+                        if (new_word == end_word) return new_ladder;
+                    }
+                    new_word[i] = original;
+                }
+            }
+            // Try deleting a character
+            if (i < last_word.length()) {
+                new_word.erase(i, 1);
+                if ((word_list.count(new_word) || new_word == end_word) && visited.count(new_word) == 0) {
+                    visited.insert(new_word);
+                    vector<string> new_ladder = ladder;
+                    new_ladder.push_back(new_word);
+                    ladder_queue.push(new_ladder);
+                    if (new_word == end_word) return new_ladder;
+                }
+            }
+        }
+    }
+
+    return {};  // No ladder found
 }
 
 void load_words(set<string>& word_list, const string& ladder) {
